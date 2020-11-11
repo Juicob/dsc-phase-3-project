@@ -15,13 +15,14 @@ df = pd.read_pickle('../data/main_df.pkl')
 #~~best overall team by wins~~
 #   - ~~home~~
 #   - ~~away~~
-# !
+# 
 # ~~most losses~~
 # - ~~home~~
 # - ~~away~~
-# !
+# 
 # wins by year plots by year all teams
 #~~best overall by conference?~~
+
 #defense wins games - pressure busts pipes -  analyze impact
 #pressure makes diamonds - look into highest scoring individuals
 #   - overall
