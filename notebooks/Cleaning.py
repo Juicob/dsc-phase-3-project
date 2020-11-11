@@ -51,7 +51,7 @@ sum_details_df = details_df.groupby(['game_id', 'team_id']).sum()
 
 # %%
 columns_from_sum_to_drop = ['player_id','fg_pct','fg3_pct','ft_pct','plus_minus','pts','reb','ast']
-columns_from_teams_to_keep = ['team_id','nickname','yearfounded','arena','city']
+columns_from_teams_to_keep = ['team_id','nickname','yearfounded','arena','city','conference']
 # columns_from_avg_to_keep = ['fg_pct','fg3_pct','ft_pct']
 sum_details_df = sum_details_df.drop(columns=columns_from_sum_to_drop)
 teams_df = teams_df[columns_from_teams_to_keep]
@@ -59,6 +59,7 @@ teams_df = teams_df[columns_from_teams_to_keep]
 
 home_sum_details_df = sum_details_df
 away_sum_details_df = sum_details_df.copy()
+away_teams_df = teams_df.copy()
 
 # home_avg_details_df = avg_details_df
 # away_avg_details_df = avg_details_df.copy()
@@ -66,6 +67,7 @@ away_sum_details_df = sum_details_df.copy()
 home_sum_details_df.columns = [f'sum_of_{col}_home' for col in home_sum_details_df.columns]
 away_sum_details_df.columns = [f'sum_of_{col}_away' for col in away_sum_details_df.columns]
 teams_df.columns = [f'home_{col}' for col in teams_df.columns]
+away_teams_df.columns = [f'away_{col}' for col in away_teams_df.columns]
 # home_avg_details_df.columns = [f'avg_of_{col}_home' for col in home_avg_details_df.columns]
 # away_avg_details_df.columns = [f'avg_of_{col}_away' for col in away_avg_details_df.columns]
 # %%
@@ -76,12 +78,17 @@ away_sum_details_df = away_sum_details_df.reset_index()
 # away_avg_details_df = away_avg_details_df.reset_index()
 
 # %%
+df.columns
+# %%
 df = df.merge(home_sum_details_df, left_on=['game_id','home_team_id'], right_on=['game_id', 'team_id'])
 df = df.merge(away_sum_details_df, left_on=['game_id','visitor_team_id'], right_on=['game_id', 'team_id'])
 df = df.merge(teams_df, left_on=['home_team_id'], right_on=['home_team_id'])
+df = df.merge(away_teams_df, left_on=['visitor_team_id'], right_on=['away_team_id'])
 
 # df = df.merge(home_avg_details_df, left_on=['game_id','home_team_id'], right_on=['game_id', 'team_id'])
 # df = df.merge(away_avg_details_df, left_on=['game_id','visitor_team_id'], right_on=['game_id', 'team_id'])
+
+# ! add away team descriptors to main df before EDA
 
 
 # %%
