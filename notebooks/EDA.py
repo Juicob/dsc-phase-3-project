@@ -288,7 +288,14 @@ def generate_chart(x, y):
 # Run app and display result inline in the notebook
 app.run_server(mode='inline')
 # %%
-
+# ! seasons_df = df group by season and home team id, visitor team id
+# ! reset index in place
+# ! seasons_df = seasons_df.merge(df[[home_team_id, visitor team id, season, home_team_wins, away_team_wins, home_conference, away_conference]], on home team id, visitor team id, season )
+# !seasons_df.sort_by(by='sum_of_fgm_home', inplace=True)
+# ! seasons_df.drop_duplicates(keep='first', inplace=True)
+# ! seasons_df.reset_index(drop=True, inplace=True)
+# !seasons_df.head()
+# 
 # %%
 
 # %%
