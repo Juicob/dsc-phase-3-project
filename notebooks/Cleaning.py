@@ -42,6 +42,9 @@ clean(df, None)
 clean(details_df, 'comment')
 clean(teams_df, None)
 
+with open('../data/details_df.pkl', 'wb') as f:
+    pickle.dump(details_df, f)
+
 # %% [markdown]
 ## Consider removing all avg/mean code currently commented out before submitting - 11/9/2020
 # %%

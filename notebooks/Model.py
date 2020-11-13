@@ -29,6 +29,7 @@ df_train, df_validation = train_test_split(df, test_size=0.10, random_state=42)
 # %%
 df_train.columns
 # %%
+# base model resuled in ~92
 features_for_modeling = ['fg_pct_home',
        'ft_pct_home', 'fg3_pct_home', 'ast_home', 'reb_home', 'fg_pct_away', 'ft_pct_away', 'fg3_pct_away', 'ast_away',
        'reb_away','sum_of_fga_home', 'sum_of_fg3m_home', 'sum_of_fg3a_home',
@@ -40,9 +41,11 @@ features_for_modeling = ['fg_pct_home',
        'sum_of_dreb_away', 'sum_of_stl_away', 'sum_of_blk_away',
        'sum_of_to_away', 'sum_of_pf_away']
 # %%
+# base model resulted in ~82
 features_for_modeling_pct = ['fg_pct_home',
        'ft_pct_home','fg3_pct_home','fg_pct_away', 'ft_pct_away', 'fg3_pct_away']
 # %%
+# base model resulted in ~82
 features_for_modeling_secondary = ['ast_home', 'reb_home','ast_away',
        'reb_away','sum_of_oreb_home',
        'sum_of_dreb_home', 'sum_of_stl_home', 'sum_of_blk_home',
@@ -69,11 +72,11 @@ for classifier in classifiers:
     print(f'{classifier} Score: {round(pipe.score(X_test, y_test), 4)}')
 # %%
 gboost_param_grid={'max_depth': [3],
-            # 'max_leaf_nodes': [2, 3],
-            # 'min_samples_leaf': [1, 2],
-            # 'n_estimators': [450],
-            # 'subsample': [0.25,0.5],
-            # 'verbose': [1],
+            'max_leaf_nodes': [2, 3],
+            'min_samples_leaf': [1, 2],
+            'n_estimators': [450],
+            'subsample': [0.25,0.5],
+            'verbose': [1],
             'random_state':[42]
 }
 # %%
@@ -108,6 +111,7 @@ px.bar(x=X_train[features_for_modeling_secondary].columns,
 # y_pred = gridbest.predict(X_test)
 # %%
 y_scores = gridbest.decision_function(X_train)
+# y_preds = gridbest.predict(X_train)
 fpr, tpr, thresh = roc_curve(y_train, y_scores)
 
 # Calculate the ROC (Reciever Operating Characteristic) AUC (Area Under the Curve)
