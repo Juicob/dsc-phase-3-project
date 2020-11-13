@@ -100,17 +100,16 @@ display(gridbest.score(X_valid, y_valid))
 display(plot_confusion_matrix(gridbest, X_valid, y_valid, cmap='bone'))
 # %%
 # Showing features ranked by importance for the model
-px.bar(x=X_train[features_for_modeling_secondary].columns,
+fig = px.bar(x=X_train[features_for_modeling_secondary].columns,
        y=sorted(pipe[0].feature_importances_, reverse=True),
        title='Most Important Features',
        labels={'x':'Features',
                'y':'Importance'})
-
+fig.update_traces(marker=dict(color="#389393", line_width=1, line_color='#fa7f72'))
 
 # %%
 # Tbh I don't fully understand the roc curve stuff and got a bit confused around here. What I think I'm doing is anyway is grabbing my false positive ans true positives from my model and plotting them to make a curve
 y_scores = gridbest.decision_function(X_train)
-# y_preds = gridbest.predict(X_train)
 fpr, tpr, thresh = roc_curve(y_train, y_scores)
 
 # Calculate the ROC (Reciever Operating Characteristic) AUC (Area Under the Curve)
@@ -121,6 +120,8 @@ fig = px.area(
     x=fpr, y=tpr,
     title=f'ROC Curve (AUC={auc(fpr, tpr):.4f})',
     labels=dict(x='False Positive Rate', y='True Positive Rate'),
+#     marker=dict(color='fa7f72'),
+
     width=700, height=500
 )
 fig.add_shape(
@@ -129,7 +130,8 @@ fig.add_shape(
 )
 
 fig.update_yaxes(scaleanchor="x", scaleratio=1)
-fig.update_xaxes(constrain='domain')
+fig.update_xaxes(constrain='domain', tickvals=[0,0.25,0.5,0.75,1])
+
 fig.show()
 
 # %%
