@@ -53,8 +53,22 @@ sum_details_df = details_df.groupby(['game_id', 'team_id']).sum()
 # avg_details_df = details_df.groupby(['game_id', 'team_id']).mean()
 
 # %%
-columns_from_sum_to_drop = ['player_id','fg_pct','fg3_pct','ft_pct','plus_minus','pts','reb','ast']
-columns_from_teams_to_keep = ['team_id','nickname','yearfounded','arena','city','conference']
+columns_from_sum_to_drop = ['player_id',
+                            'fg_pct',
+                            'fg3_pct',
+                            'ft_pct',
+                            'plus_minus',
+                            'pts',
+                            'reb',
+                            'ast'
+                        ]
+columns_from_teams_to_keep = ['team_id',
+                              'nickname',
+                              'yearfounded',
+                              'arena',
+                              'city',
+                              'conference'
+                            ]
 # columns_from_avg_to_keep = ['fg_pct','fg3_pct','ft_pct']
 sum_details_df = sum_details_df.drop(columns=columns_from_sum_to_drop)
 teams_df = teams_df[columns_from_teams_to_keep]
@@ -83,10 +97,22 @@ away_sum_details_df = away_sum_details_df.reset_index()
 # %%
 df.columns
 # %%
-df = df.merge(home_sum_details_df, left_on=['game_id','home_team_id'], right_on=['game_id', 'team_id'])
-df = df.merge(away_sum_details_df, left_on=['game_id','visitor_team_id'], right_on=['game_id', 'team_id'])
-df = df.merge(teams_df, left_on=['home_team_id'], right_on=['home_team_id'])
-df = df.merge(away_teams_df, left_on=['visitor_team_id'], right_on=['away_team_id'])
+df = df.merge(home_sum_details_df, 
+        left_on=['game_id','home_team_id'], 
+        right_on=['game_id', 'team_id']
+    )
+df = df.merge(away_sum_details_df, 
+        left_on=['game_id','visitor_team_id'], 
+        right_on=['game_id', 'team_id']
+    )
+df = df.merge(teams_df, 
+        left_on=['home_team_id'], 
+        right_on=['home_team_id']
+    )
+df = df.merge(away_teams_df, 
+        left_on=['visitor_team_id'], 
+        right_on=['away_team_id']
+    )
 
 # df = df.merge(home_avg_details_df, left_on=['game_id','home_team_id'], right_on=['game_id', 'team_id'])
 # df = df.merge(away_avg_details_df, left_on=['game_id','visitor_team_id'], right_on=['game_id', 'team_id'])
@@ -100,7 +126,7 @@ with open('../data/main_df.pkl', 'wb') as f:
 # %%
 df.to_csv('../data/main_df.csv')
 # %% [markdown]
-# 
+# prework planning
 # consider grouping game details metrics for [these values](https://i.imgur.com/WqiiDfg.png) and also adding to main table
 # 
 # - group by game id (and team_id?????) to create columns for both maybe thisll work

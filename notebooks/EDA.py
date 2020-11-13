@@ -76,18 +76,10 @@ df['away_team_losses'] = df['home_team_wins'].apply(lambda x: 1.0 if x == 1 else
 # %%
 # %%
 # Groups sums of home team stats for the entire data
-home_history_totals = df.groupby(by='home_team_id').sum()[['home_team_wins','home_team_losses','sum_of_fgm_home',
-       'sum_of_fga_home', 'sum_of_fg3m_home', 'sum_of_fg3a_home',
-       'sum_of_ftm_home', 'sum_of_fta_home', 'sum_of_oreb_home',
-       'sum_of_dreb_home', 'sum_of_stl_home', 'sum_of_blk_home',
-       'sum_of_to_home', 'sum_of_pf_home']]
+home_history_totals = df.groupby(by='home_team_id').sum()[['home_team_wins','home_team_losses','sum_of_fgm_home','sum_of_fga_home', 'sum_of_fg3m_home', 'sum_of_fg3a_home','sum_of_ftm_home', 'sum_of_fta_home','sum_of_oreb_home','sum_of_dreb_home', 'sum_of_stl_home', 'sum_of_blk_home','sum_of_to_home', 'sum_of_pf_home']]
 
 # Groups sums of away team stats for the entire data
-away_history_totals = df.copy().groupby(by='visitor_team_id').sum()[['away_team_wins','away_team_losses','sum_of_fgm_away',
-       'sum_of_fga_away', 'sum_of_fg3m_away', 'sum_of_fg3a_away',
-       'sum_of_ftm_away', 'sum_of_fta_away', 'sum_of_oreb_away',
-       'sum_of_dreb_away', 'sum_of_stl_away', 'sum_of_blk_away',
-       'sum_of_to_away', 'sum_of_pf_away']]
+away_history_totals = df.copy().groupby(by='visitor_team_id').sum()[['away_team_wins','away_team_losses','sum_of_fgm_away','sum_of_fga_away', 'sum_of_fg3m_away', 'sum_of_fg3a_away','sum_of_ftm_away', 'sum_of_fta_away', 'sum_of_oreb_away','sum_of_dreb_away', 'sum_of_stl_away', 'sum_of_blk_away','sum_of_to_away', 'sum_of_pf_away']]
 
 # I reset the index so I can then use the id for the merge in the next step. I tried merging on the index but it wasn't working like I expected it too so this was my work around, not sure if this is best practice or not.
 home_history_totals.reset_index(inplace=True)
@@ -96,7 +88,7 @@ away_history_totals.reset_index(inplace=True)
 
 # %%
 # Grouping removes object data types so I'm merging back into the main df to get the descriptors I need for the data set
-home_history_totals = pd.merge(home_history_totals, df[['home_team_id','home_nickname', 'home_yearfounded','home_arena', 'home_city', 'home_conference']], on=['home_team_id'])
+home_history_totals = pd.merge(home_history_totals, df[['home_team_id','home_nickname','home_yearfounded','home_arena', 'home_city', 'home_conference']], on=['home_team_id'])
 
 
 # Grouping removes object data types so I'm merging back into the main df to get the descriptors I need for the data set
@@ -114,17 +106,22 @@ away_history_totals.reset_index(drop=True, inplace=True)
 
 # %%
 # Combining both sets to get total win numbers for my conference chart
-conference_totals = home_history_totals.merge(away_history_totals,left_on='home_team_id', right_on='visitor_team_id')
+conference_totals = home_history_totals.merge(away_history_totals,
+                                              left_on='home_team_id', 
+                                              right_on='visitor_team_id')
 # %%
 # Creating the total wins feature by combining the teams home and away wins
 conference_totals['total_wins'] = conference_totals.home_team_wins + conference_totals.away_team_wins
 # %%
 # Creating a bar chart for each teams total wins and separating them by conference
-fig = px.bar(conference_totals.sort_values(by='total_wins', ascending=False), x='home_nickname', y='total_wins', color='home_conference')
+fig = px.bar(conference_totals.sort_values(by='total_wins', ascending=False),
+                                                        x='home_nickname', 
+                                                        y='total_wins', 
+                                                        color='home_conference')
 
 # This is where I began my tasteful subtle (I think anyway!) Spurs chart colorway. Being from San Antonio I know we had a consistently above average record but I didn't know we would top wins from the span of this data set! This data set at this time spans all seasons from 2003-2020. Spurs represent =D
 fig.update_layout(title=dict(text='Total Wins by Team and Conference',
-                            y=0.9,x=0.5,
+                            y=0.958,x=0.5,
                             xanchor='auto', 
                             yanchor='middle'),
                 barmode='group',
@@ -152,13 +149,22 @@ away_history_totals.sort_values(by='away_team_wins', ascending=False, inplace=Tr
 home_history_totals.sort_values(by='home_team_wins', ascending=False, inplace=True)
 # Creating bar plot with graph objects. Like I mentioned, color is way more intuitive
 fig = go.Figure(data=[
-    go.Bar(name='Home Wins', x=home_history_totals.home_nickname, y=home_history_totals.home_team_wins, marker_color='#389393'),
-    go.Bar(name='Away Wins', x=away_history_totals.away_nickname, y=away_history_totals.away_team_wins, marker_color='#f5a25d'),
+    go.Bar(name='Home Wins', 
+           x=home_history_totals.home_nickname, 
+           y=home_history_totals.home_team_wins, 
+           marker_color='#389393'
+        ),
+    go.Bar(name='Away Wins', 
+           x=away_history_totals.away_nickname, 
+           y=away_history_totals.away_team_wins, 
+           marker_color='#f5a25d'
+        ),
 ])
 fig.update_layout(title=dict(text='Wins Per Team by Travel',
-                             y=0.9,x=0.5,
+                             y=0.94,x=0.5,
                              xanchor='auto', 
-                             yanchor='middle'),
+                             yanchor='middle'
+                        ),
                   barmode='group',
                   plot_bgcolor='#ebebeb',
                   xaxis_title="Team Name",
@@ -168,23 +174,39 @@ fig.update_layout(title=dict(text='Wins Per Team by Travel',
                   legend_bgcolor='#ebebeb',
                   legend_bordercolor='#fa7f72',
                   legend_borderwidth=4,
-                  height=500,
-                  width=1000)
+                  height=800,
+                  width=1000
+            )
 fig.show()
 # %%
 
 # Sorting by wins to order the chart
-away_history_totals.sort_values(by='away_team_losses', ascending=False, inplace=True)
-home_history_totals.sort_values(by='home_team_losses', ascending=False, inplace=True)
+away_history_totals.sort_values(by='away_team_losses', 
+                                    ascending=False, 
+                                    inplace=True
+                                )
+home_history_totals.sort_values(by='home_team_losses', 
+                                    ascending=False, 
+                                    inplace=True
+                                )
 # Creating bar plot with graph objects. Like I mentioned, color is way more intuitive
 fig = go.Figure(data=[
-    go.Bar(name='Home Losses', x=home_history_totals.home_nickname, y=home_history_totals.home_team_losses, marker_color='#389393'),
-    go.Bar(name='Away Losses', x=away_history_totals.away_nickname, y=away_history_totals.away_team_losses, marker_color='#f5a25d'),
+    go.Bar(name='Home Losses', 
+           x=home_history_totals.home_nickname, 
+           y=home_history_totals.home_team_losses, 
+           marker_color='#389393'
+        ),
+    go.Bar(name='Away Losses', 
+           x=away_history_totals.away_nickname, 
+           y=away_history_totals.away_team_losses, 
+           marker_color='#f5a25d'
+        ),
 ])
 fig.update_layout(title=dict(text='Losses Per Team by Travel',
-                             y=0.9,x=0.5,
+                             y=0.94,x=0.5,
                              xanchor='auto', 
-                             yanchor='middle'),
+                             yanchor='middle'
+                        ),
                   barmode='group',
                   plot_bgcolor='#ebebeb',
                   legend_bgcolor='#ebebeb',
@@ -194,15 +216,16 @@ fig.update_layout(title=dict(text='Losses Per Team by Travel',
                   yaxis_title="Total Wins",
                 #   bargap=0.25,
                   bargroupgap=0.15,
-                  height=500,
-                  width=1000)
+                  height=800,
+                  width=1000
+            )
 
 fig.show()
 
 # %%
 
-players_df = pd.read_pickle('../data/details_df.pkl')
-players_df.head()
+# players_df = pd.read_pickle('../data/details_df.pkl')
+# players_df.head()
 # %%
 # Creating boards feature to find each players total offensive and defensive rebounds. I really wanted to do a 'Board man gets paid analysis' but I was discouraged because I didn't have enough time.
 players_df['total_boards'] = players_df.oreb + players_df.dreb
@@ -214,7 +237,12 @@ player_totals.reset_index(inplace=True)
 
 player_totals = player_totals.sort_values(by='total_boards', ascending=False)
 # Merge totals back into players df to get the descriptors I need to make sense of the numbers
-player_totals = pd.merge(player_totals,players_df[['player_id','player_name','start_position','team_city']], on=['player_id'])
+player_totals = pd.merge(player_totals,players_df[['player_id',
+                                                    'player_name',
+                                                    'start_position',
+                                                    'team_city']], 
+                         on=['player_id']
+                    )
 player_totals.reset_index(inplace=True, drop=True)
 player_totals.drop_duplicates(subset=['player_id'],inplace=True)
 
@@ -280,7 +308,7 @@ def generate_chart(x, y):
                     bargroupgap=0.15,
                     height=800,
                     width=1500)
-    fig.update_traces(marker=dict(color="#389393", line_width=1, line_color='#fa7f72', opacity=0.8))
+    fig.update_traces(marker=dict(color="#389393", line_width=1, line_color='#fa7f72', opacity=0.7,))
     # fig.update_traces(marker=dict(color="#fa7f72", line_width=1, line_color='#fa7f72', opacity=0.8),selector=dict(type='scatter'))
     
 
