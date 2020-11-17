@@ -316,6 +316,8 @@ def generate_chart(x, y):
 # Run app and display result inline in the notebook
 app.run_server(mode='inline')
 # %%
+# ! Future work!
+
 # ! seasons_df = df group by season and home team id, visitor team id
 # ! reset index in place
 # ! seasons_df = seasons_df.merge(df[[home_team_id, visitor team id, season, home_team_wins, away_team_wins, home_conference, away_conference]], on home team id, visitor team id, season )
@@ -325,74 +327,3 @@ app.run_server(mode='inline')
 # !seasons_df.head()
 # 
 # %%
-
-# %%
-
-# Build App
-app = JupyterDash(__name__)
-app.layout = html.Div([
-    html.P("Select X-axis:"),
-    dcc.Checklist(
-        # ids to reference in callback section
-        id='x-axis', 
-        # Add desired values that correspond to df features. You're also able to add your own labels like below in the dropdown.
-        options=[{'label': 'Starting Position', 'value':'start_position'}, 
-                 {'label': 'Team City', 'value':'team_city'}
-        ],
-        # Edit value feature to represent the default selector on initial render
-        value=['start_position'], 
-        # Option to render chart in notebook
-        labelStyle={'display': 'inline-block'}
-
-),  
-    html.P("Select Y-axis:"),
-    dcc.Dropdown(
-        id='y-axis', 
-        options=[
-                {'label':'Rebounds', 'value':'total_boards'},
-                {'label':'Field Goals Made', 'value':'fgm'},
-                {'label':'Field Goals Attempted', 'value':'fga'}, 
-                {'label':'3Pts Made', 'value':'fg3m'},
-                {'label':'3Pts Attempted', 'value':'fg3a'},
-                {'label':'Free Throws Made', 'value':'ftm'},
-                {'label':'Free Throws Attempted', 'value':'fta'},
-                {'label':'Offensive Rebounds', 'value':'oreb'},
-                {'label':'Defensive Rebounds', 'value':'dreb'}, 
-                {'label':'Steals', 'value':'stl'},
-                {'label':'Blocks', 'value':'blk'},
-                {'label':'Turn Overs', 'value':'to'},
-                {'label':'Personal Fouls', 'value':'pf'},
-        ],
-  
-        value='total_boards', 
-    ),
-    html.P(),
-    # Component to actually plot the chart vs the interactive selectors above
-    dcc.Graph(id="boxplot"),
-])
-# Establish callbacks to enable the chart to update when choosing a different option
-@app.callback(
-    Output("boxplot", "figure"), 
-    [Input("x-axis", "value"), 
-     Input("y-axis", "value")])
-# Function to create the figure to return
-def generate_chart(x, y):
-    fig = px.box(df, x=x, y=y, hover_name='player_name',points='all', notched=True)
-# More #aesthetics
-    fig.update_layout(title=dict(text='Position or City Numbers by Stat',
-                             y=0.955,x=0.5,
-                             xanchor='auto', 
-                             yanchor='middle'),
-                    barmode='group',
-                    plot_bgcolor='#ebebeb',
-                    bargap=0.25,
-                    bargroupgap=0.15,
-                    height=800,
-                    width=1500)
-    fig.update_traces(marker=dict(color="#389393", line_width=1, line_color='#fa7f72', opacity=0.8))
-    # fig.update_traces(marker=dict(color="#fa7f72", line_width=1, line_color='#fa7f72', opacity=0.8),selector=dict(type='scatter'))
-    
-
-    return fig
-# Run app and display result inline in the notebook
-app.run_server(mode='inline')

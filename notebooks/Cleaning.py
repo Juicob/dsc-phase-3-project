@@ -114,10 +114,7 @@ df = df.merge(away_teams_df,
         right_on=['away_team_id']
     )
 
-# df = df.merge(home_avg_details_df, left_on=['game_id','home_team_id'], right_on=['game_id', 'team_id'])
-# df = df.merge(away_avg_details_df, left_on=['game_id','visitor_team_id'], right_on=['game_id', 'team_id'])
 
-# ! add away team descriptors to main df before EDA
 
 
 # %%
